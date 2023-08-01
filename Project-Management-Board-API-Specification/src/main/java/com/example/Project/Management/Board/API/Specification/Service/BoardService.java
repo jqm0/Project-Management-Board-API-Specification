@@ -57,4 +57,7 @@ public class BoardService {
         // Save the updated board
         return boardRepository.save(existingBoard);
     }
+    public void saveBoard(Board board) {
+        boardRepository.save(board);
+    }
 }

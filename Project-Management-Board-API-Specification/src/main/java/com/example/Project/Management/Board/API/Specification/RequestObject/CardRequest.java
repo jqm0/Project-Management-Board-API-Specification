@@ -8,5 +8,5 @@ import lombok.Setter;
 public class CardRequest {
     private String title;
     private String description;
-    private Long section;
+    private String section;
 }
