@@ -12,12 +12,9 @@ import lombok.Setter;
 @Setter
 @Data
 @Entity
-public class Card extends BaseEntity{
+public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
-    private String description;
-    private Section section;
-
+    private Long sectionId; 
+    private String name;
 }
