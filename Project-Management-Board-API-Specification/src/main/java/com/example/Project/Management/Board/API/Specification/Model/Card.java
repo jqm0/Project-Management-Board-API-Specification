@@ -18,6 +18,6 @@ public class Card extends BaseEntity{
     private Long id;
     private String title;
     private String description;
-    private Section section;
+    private String section;
 
 }
