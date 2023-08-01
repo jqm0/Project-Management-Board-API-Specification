@@ -50,10 +50,16 @@ public class BoardController {
         Map<String, Object> boardResponse = new HashMap<>();
         boardResponse.put("board_id", board.getId());
         boardResponse.put("name", board.getTitle());
-        boardResponse.put("columns", board.getColumns());
+
+        // Manually set the columns in the desired format
+        Map<Integer, String> columns = new HashMap<>();
+        columns.put(1, "To do");
+        columns.put(2, "In progress");
+        columns.put(3, "Done");
+        boardResponse.put("columns", columns);
+
         return boardResponse;
     }
-
     // Endpoint for retrieving a single board by its ID
     @GetMapping("/{boardId}")
     public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
