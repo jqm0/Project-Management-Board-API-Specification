@@ -36,12 +36,25 @@ public class BoardService {
         return optionalBoard.orElse(null);
     }
     public boolean deleteBoard(Long boardId) {
-        if (boardRepository.existsById(boardId)) {
-            boardRepository.deleteById(boardId);
-            return true;
+        if (!boardRepository.existsById(boardId)) {
+            return false; // Board with the given ID does not exist
         }
-        return false;
+
+        boardRepository.deleteById(boardId);
+        return true; // Board successfully deleted
     }
 
 
+    public Board updateBoard(Long boardId, BoradRequest boardRequest) {
+        Board existingBoard = boardRepository.findById(boardId).orElse(null);
+        if (existingBoard == null) {
+            return null; // Board with the given ID not found
+        }
+
+        // Update the board properties
+        existingBoard.setTitle(boardRequest.getTitle());
+
+        // Save the updated board
+        return boardRepository.save(existingBoard);
+    }
 }

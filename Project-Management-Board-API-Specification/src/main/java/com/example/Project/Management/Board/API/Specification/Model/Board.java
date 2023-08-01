@@ -18,6 +18,11 @@ public class Board extends BaseEntity {
     private String title;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Card> cards = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "board_columns", joinColumns = @JoinColumn(name = "board_id"))
+    @MapKeyColumn(name = "column_id")
+    @Column(name = "column_name")
+    private Map<Integer, String> columns;
     public void addCard(Card card) {
         cards.add(card);
     }

@@ -50,17 +50,8 @@ public class BoardController {
         Map<String, Object> boardResponse = new HashMap<>();
         boardResponse.put("board_id", board.getId());
         boardResponse.put("name", board.getTitle());
-        boardResponse.put("columns", createColumnsMap());
-
+        boardResponse.put("columns", board.getColumns());
         return boardResponse;
-    }
-
-    private Map<Integer, String> createColumnsMap() {
-        Map<Integer, String> columns = new HashMap<>();
-        columns.put(1, "To do");
-        columns.put(2, "In progress");
-        columns.put(3, "Done");
-        return columns;
     }
 
     // Endpoint for retrieving a single board by its ID
@@ -72,14 +63,41 @@ public class BoardController {
         }
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
+    @PutMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> updateBoard(@PathVariable Long boardId, @RequestBody BoradRequest boardRequest) {
+        Board updatedBoard = boardService.updateBoard(boardId, boardRequest);
+        if (updatedBoard == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        BoardResponse response = convertToResponse2(updatedBoard);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // ... Other methods ...
+
+    private BoardResponse convertToResponse2(Board board) {
+        // Create a new BoardResponse object and set its properties
+        BoardResponse response = new BoardResponse();
+        response.setBoardId(board.getId());
+        response.setTitle(board.getTitle());
+        response.setColumns(board.getColumns());
+        return response;
+    }
 
     // Endpoint for deleting a specific board given its ID
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Map<String, Object>> deleteBoard(@PathVariable Long boardId) {
         boolean deleted = boardService.deleteBoard(boardId);
         if (!deleted) {
+            // Return 404 Not Found if the board with the given ID does not exist
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("successful", true);
+        responseBody.put("message", "Board with ID " + boardId + " has been deleted successfully.");
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
