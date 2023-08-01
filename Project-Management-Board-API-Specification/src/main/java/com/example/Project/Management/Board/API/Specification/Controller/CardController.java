@@ -82,7 +82,35 @@ public class CardController {
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
+    // Endpoint for getting a specific card from a board by its ID
+    @GetMapping("/{boardId}/cards/{cardId}")
+    public ResponseEntity<CardResponse> getCardFromBoardById(
+            @PathVariable Long boardId,
+            @PathVariable Long cardId
+    ) {
+        // Check if the board with the given boardId exists
+        Board board = boardService.getBoardById(boardId);
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+        // Find the card with the specified cardId from the board's cards
+        Card card = board.getCards().stream()
+                .filter(c -> c.getId().equals(cardId))
+                .findFirst()
+                .orElse(null);
+
+        // If the card is not found, return 404 NOT FOUND
+        if (card == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Convert the card to the desired response format
+        CardResponse cardResponse = convertToCardResponse(card);
+
+        // Return the card response with 200 OK
+        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
+    }
     // ... other code ...
 
     private CardResponse convertToCardResponse(Card card) {
