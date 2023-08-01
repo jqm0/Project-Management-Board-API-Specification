@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -30,11 +33,34 @@ public class BoardController {
     }
 
     // Endpoint for getting all boards
-
     @GetMapping
-    public ResponseEntity<List<Board>> getAllBoards() {
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> getAllBoards() {
         List<Board> boards = boardService.getAllBoards();
-        return new ResponseEntity<>(boards, HttpStatus.OK);
+        List<Map<String, Object>> boardResponses = boards.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+
+        Map<String, List<Map<String, Object>>> responseBody = new HashMap<>();
+        responseBody.put("boards", boardResponses);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    private Map<String, Object> convertToResponse(Board board) {
+        Map<String, Object> boardResponse = new HashMap<>();
+        boardResponse.put("board_id", board.getId());
+        boardResponse.put("name", board.getTitle());
+        boardResponse.put("columns", createColumnsMap());
+
+        return boardResponse;
+    }
+
+    private Map<Integer, String> createColumnsMap() {
+        Map<Integer, String> columns = new HashMap<>();
+        columns.put(1, "To do");
+        columns.put(2, "In progress");
+        columns.put(3, "Done");
+        return columns;
     }
 
     // Endpoint for retrieving a single board by its ID
