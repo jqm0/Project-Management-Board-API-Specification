@@ -8,22 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
     private final BoardService boardService;
-
     @Autowired
     public BoardController(BoardService boardService) {
         this.boardService = boardService;
     }
-
     // Endpoint for creating a new board
     @PostMapping
     public ResponseEntity<BoardResponse> createBoard(@RequestBody BoradRequest boardRequest) {
@@ -31,7 +27,6 @@ public class BoardController {
         BoardResponse response = new BoardResponse(createdBoard.getId(), createdBoard.getTitle());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
     // Endpoint for getting all boards
     @GetMapping
     public ResponseEntity<Map<String, List<Map<String, Object>>>> getAllBoards() {
@@ -39,18 +34,14 @@ public class BoardController {
         List<Map<String, Object>> boardResponses = boards.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
-
         Map<String, List<Map<String, Object>>> responseBody = new HashMap<>();
         responseBody.put("boards", boardResponses);
-
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
-
     private Map<String, Object> convertToResponse(Board board) {
         Map<String, Object> boardResponse = new HashMap<>();
         boardResponse.put("board_id", board.getId());
         boardResponse.put("name", board.getTitle());
-
         // Manually set the columns in the desired format
         Map<Integer, String> columns = new HashMap<>();
         columns.put(1, "To do");
@@ -60,7 +51,6 @@ public class BoardController {
 
         return boardResponse;
     }
-
     // Endpoint for retrieving a single board by its ID
     @GetMapping("/{boardId}")
     public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
@@ -70,7 +60,6 @@ public class BoardController {
         }
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
-
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(@PathVariable Long boardId, @RequestBody BoradRequest boardRequest) {
         Board updatedBoard = boardService.updateBoard(boardId, boardRequest);
@@ -81,9 +70,6 @@ public class BoardController {
         BoardResponse response = convertToResponse2(updatedBoard);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    // ... Other methods ...
-
     private BoardResponse convertToResponse2(Board board) {
         // Create a new BoardResponse object and set its properties
         BoardResponse response = new BoardResponse();
@@ -92,7 +78,6 @@ public class BoardController {
         response.setColumns(board.getColumns());
         return response;
     }
-
     // Endpoint for deleting a specific board given its ID
     @DeleteMapping("/{boardId}")
     public ResponseEntity<Map<String, Object>> deleteBoard(@PathVariable Long boardId) {
@@ -101,11 +86,9 @@ public class BoardController {
             // Return 404 Not Found if the board with the given ID does not exist
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("successful", true);
         responseBody.put("message", "Board with ID " + boardId + " has been deleted successfully.");
-
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
