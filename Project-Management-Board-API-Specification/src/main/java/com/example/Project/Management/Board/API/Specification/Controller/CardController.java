@@ -11,6 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/boards")
 public class CardController {
@@ -55,5 +60,37 @@ public class CardController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     // Endpoint for getting all cards from a board
+    // Endpoint for getting all cards from a board
+    @GetMapping("/{boardId}/cards")
+    public ResponseEntity<Map<String, List<CardResponse>>> getCardsFromBoard(@PathVariable Long boardId) {
+        // Check if the board with the given boardId exists
+        Board board = boardService.getBoardById(boardId);
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+        // Retrieve the list of cards from the specified board
+        List<Card> cards = board.getCards();
+
+        // Convert the list of cards to the desired response format
+        List<CardResponse> cardResponses = cards.stream()
+                .map(this::convertToCardResponse)
+                .collect(Collectors.toList());
+
+        Map<String, List<CardResponse>> responseBody = new HashMap<>();
+        responseBody.put("cards", cardResponses);
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    // ... other code ...
+
+    private CardResponse convertToCardResponse(Card card) {
+        CardResponse response = new CardResponse();
+        response.setId(card.getId());
+        response.setTitle(card.getTitle());
+        response.setDescription(card.getDescription());
+        response.setSection(card.getSection());
+        return response;
+    }
 }
