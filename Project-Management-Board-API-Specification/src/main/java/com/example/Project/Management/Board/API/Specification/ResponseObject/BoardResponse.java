@@ -15,7 +15,6 @@ public class BoardResponse {
     private Long boardId; // Unique identifier for the board
     private String title; // Name of the board
     private Map<Integer, String> columns; // Columns of the board
-
     public BoardResponse(Long boardId, String title) {
         this.boardId = boardId;
         this.title = title;

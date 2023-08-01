@@ -13,9 +13,7 @@ import java.util.Optional;
 
 @Service
 public class BoardService {
-
     private final BoardRepo boardRepository;
-
     @Autowired
     public BoardService(BoardRepo boardRepository) {
         this.boardRepository = boardRepository;
@@ -39,18 +37,14 @@ public class BoardService {
         if (!boardRepository.existsById(boardId)) {
             return false; // Board with the given ID does not exist
         }
-
         boardRepository.deleteById(boardId);
         return true; // Board successfully deleted
     }
-
-
     public Board updateBoard(Long boardId, BoradRequest boardRequest) {
         Board existingBoard = boardRepository.findById(boardId).orElse(null);
         if (existingBoard == null) {
             return null; // Board with the given ID not found
         }
-
         // Update the board properties
         existingBoard.setTitle(boardRequest.getTitle());
 
