@@ -60,6 +60,7 @@ public class BoardController {
 
         return boardResponse;
     }
+
     // Endpoint for retrieving a single board by its ID
     @GetMapping("/{boardId}")
     public ResponseEntity<Board> getBoard(@PathVariable Long boardId) {
@@ -69,6 +70,7 @@ public class BoardController {
         }
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
+
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(@PathVariable Long boardId, @RequestBody BoradRequest boardRequest) {
         Board updatedBoard = boardService.updateBoard(boardId, boardRequest);

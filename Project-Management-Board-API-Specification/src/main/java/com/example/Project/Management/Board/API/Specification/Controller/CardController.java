@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/boards")
 public class CardController {
-
     private final CardService cardService;
     private final BoardService boardService;
 
@@ -52,13 +52,14 @@ public class CardController {
         Integer newID = board.getCards().size() + 2;
         // Create the response and return
         CardResponse response = new CardResponse(
-                (long)newID,
+                (long) newID,
                 card.getTitle(),
                 card.getDescription(),
                 card.getSection()
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     // Endpoint for getting all cards from a board
     // Endpoint for getting all cards from a board
     @GetMapping("/{boardId}/cards")
@@ -82,6 +83,7 @@ public class CardController {
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
+
     // Endpoint for getting a specific card from a board by its ID
     @GetMapping("/{boardId}/cards/{cardId}")
     public ResponseEntity<CardResponse> getCardFromBoardById(
@@ -111,6 +113,7 @@ public class CardController {
         // Return the card response with 200 OK
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
+
     // Endpoint for updating a card on a board by its ID
     @PutMapping("/{boardId}/cards/{cardId}")
     public ResponseEntity<CardResponse> updateCardOnBoard(
@@ -149,7 +152,41 @@ public class CardController {
         // Return the updated card response with 200 OK
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
-    // ... other code ...
+
+    // Endpoint for deleting a card from a board by its ID
+    @DeleteMapping("/{boardId}/cards/{cardId}")
+    public ResponseEntity<Map<String, String>> deleteCardFromBoard(
+            @PathVariable Long boardId,
+            @PathVariable Long cardId
+    ) {
+        // Check if the board with the given boardId exists
+        Board board = boardService.getBoardById(boardId);
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Find the card with the specified cardId from the board's cards
+        Card cardToDelete = board.getCards().stream()
+                .filter(c -> c.getId().equals(cardId))
+                .findFirst()
+                .orElse(null);
+
+        // If the card is not found, return 404 NOT FOUND
+        if (cardToDelete == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Remove the card from the board
+        board.removeCard(cardToDelete);
+        boardService.saveBoard(board);
+
+        // Create the response message
+        String message = "Card with ID " + cardId + " has been deleted successfully from board " + boardId + ".";
+        Map<String, String> responseBody = Collections.singletonMap("message", message);
+
+        // Return the response with 200 OK
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
 
     private CardResponse convertToCardResponse(Card card) {
         CardResponse response = new CardResponse();
