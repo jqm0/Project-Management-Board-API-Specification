@@ -111,6 +111,44 @@ public class CardController {
         // Return the card response with 200 OK
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
+    // Endpoint for updating a card on a board by its ID
+    @PutMapping("/{boardId}/cards/{cardId}")
+    public ResponseEntity<CardResponse> updateCardOnBoard(
+            @PathVariable Long boardId,
+            @PathVariable Long cardId,
+            @RequestBody CardRequest cardRequest
+    ) {
+        // Check if the board with the given boardId exists
+        Board board = boardService.getBoardById(boardId);
+        if (board == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Find the card with the specified cardId from the board's cards
+        Card cardToUpdate = board.getCards().stream()
+                .filter(c -> c.getId().equals(cardId))
+                .findFirst()
+                .orElse(null);
+
+        // If the card is not found, return 404 NOT FOUND
+        if (cardToUpdate == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Update the card with the values from the request body
+        cardToUpdate.setTitle(cardRequest.getTitle());
+        cardToUpdate.setDescription(cardRequest.getDescription());
+        cardToUpdate.setSection(cardRequest.getSection());
+
+        // Save the updated card to the board
+        boardService.saveBoard(board);
+
+        // Convert the updated card to the desired response format
+        CardResponse cardResponse = convertToCardResponse(cardToUpdate);
+
+        // Return the updated card response with 200 OK
+        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
+    }
     // ... other code ...
 
     private CardResponse convertToCardResponse(Card card) {
