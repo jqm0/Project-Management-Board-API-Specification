@@ -1,10 +1,10 @@
 package com.example.Project.Management.Board.API.Specification.Model;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 @Getter
@@ -16,8 +16,8 @@ public class Board extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    @ElementCollection
-    private List<Card> cards;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Card> cards = new ArrayList<>();
     public void addCard(Card card) {
         cards.add(card);
     }
