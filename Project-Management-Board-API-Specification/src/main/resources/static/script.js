@@ -1,16 +1,18 @@
+
 async function displayCardsBySection() {
   const boardId = 2; // Assuming the card should be added to the board with ID 2
   try {
     // Fetch the list of cards for the board using the provided fetch code
     const requestOptions = {
       method: 'GET',
-      redirect: 'follow'
+      redirect: 'follow',
     };
 
-    const response = await fetch("http://localhost:8080/api/boards/" + boardId + "/cards", requestOptions);
+    const response = await fetch(`http://localhost:8080/api/boards/${boardId}/cards`, requestOptions);
     if (!response.ok) {
       throw new Error(`Failed to fetch cards. Status: ${response.status} ${response.statusText}`);
     }
+
     // Parse the response body as JSON
     const data = await response.json();
     console.log("cards:", data); // Add this line to inspect the value of `cards`
@@ -21,10 +23,14 @@ async function displayCardsBySection() {
     const inProgressContainer = document.getElementById('inprogress');
     const doneContainer = document.getElementById('done');
 
-    // Clear existing content in the containers
+    // Get the select element for the card IDs
+    const selectElement = document.getElementById('anotherSelectID2');
+
+    // Clear existing content in the containers and the select element
     todoContainer.innerHTML = '<h2>To Do</h2>';
     inProgressContainer.innerHTML = '<h2>In Progress</h2>';
     doneContainer.innerHTML = '<h2>Done</h2>';
+    selectElement.innerHTML = '<option selected disabled>Select ID From Here</option>';
 
     // Loop through the cards and create HTML elements to display them
     cards.forEach((card, index) => {
@@ -35,20 +41,28 @@ async function displayCardsBySection() {
         <p>Title: ${card.title}</p>
         <p>Description: ${card.description}</p>
       `;
+
       // Add the card to the corresponding container based on the section
       if (card.section === '1' | card.section === "TODO") {
-        todoContainer.appendChild(cardElement);
-      } else if (card.section === '2' || card.section === "In Progress") {
-        inProgressContainer.appendChild(cardElement);
-      } else if (card.section === '3'  || card.section === "Done") {
-        doneContainer.appendChild(cardElement);
-      }
+              todoContainer.appendChild(cardElement);
+            } else if (card.section === '2' || card.section === "In Progress") {
+              inProgressContainer.appendChild(cardElement);
+            } else if (card.section === '3'  || card.section === "Done") {
+              doneContainer.appendChild(cardElement);
+       }
+
+      // Populate the select element with card IDs
+      const optionElement = document.createElement('option');
+      optionElement.value = card.id; // Assuming 'id' is the property that holds the card ID
+      optionElement.textContent = card.id;
+      selectElement.appendChild(optionElement);
     });
   } catch (error) {
     console.error('Error fetching cards:', error);
     alert('An error occurred while fetching cards.');
   }
 }
+
 async function createNewCard() {
   const boardId = 2; // Assuming the card should be added to the board with ID 2
   const titleInput = document.getElementById('createCardTitleInput');
