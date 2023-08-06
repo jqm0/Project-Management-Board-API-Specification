@@ -37,7 +37,7 @@ async function displayCardsBySection() {
       const cardElement = document.createElement('div');
       cardElement.classList.add('card'); // Add the 'card' class for styling
       cardElement.innerHTML = `
-        <h3>Card ID: ${index + 1}</h3>
+        <h3>Card ID: ${card.id}</h3>
         <p>Title: ${card.title}</p>
         <p>Description: ${card.description}</p>
 
@@ -57,7 +57,6 @@ async function displayCardsBySection() {
       option2.value = card.id;
       option2.text = `Card ID: ${card.id}`;
       anotherSelectID.appendChild(option2);
-
       const option3 = document.createElement('option');
       option3.value = card.id;
       option3.text = `Card ID: ${card.id}`;
@@ -145,6 +144,49 @@ async function deleteCard(cardId) {
   }
 }
 
+async function updateCard() {
+  const cardIdDropdown = document.getElementById('anotherSelectID');
+  const cardId = cardIdDropdown.value;
+
+  const titleInput = document.getElementById('updateCardTitleInput');
+  const descInput = document.getElementById('updateCardDescInput');
+  const sectionSelect = document.getElementById('updateCategorySelect');
+
+  // Get the values from the input fields
+  const updatedData = {
+    title: titleInput.value,
+    description: descInput.value,
+    section: sectionSelect.value,
+  };
+
+  // Make the PUT request to update the card
+  try {
+    const boardId = 2; // Assuming the card belongs to the board with ID 10
+
+    const requestOptions = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+      redirect: 'follow',
+    };
+
+    const response = await fetch(`http://localhost:8080/api/boards/${boardId}/cards/${cardId}`, requestOptions);
+    if (!response.ok) {
+      throw new Error(`Failed to update card. Status: ${response.status} ${response.statusText}`);
+    }
+
+    const updatedCard = await response.json();
+    console.log('Updated Card:', updatedCard);
+    alert('Card updated successfully!');
+    // You can now call the displayCardsBySection() function to refresh the displayed cards.
+    displayCardsBySection();
+  } catch (error) {
+    console.error('Error updating card:', error);
+    alert('An error occurred while updating the card.');
+  }
+}
 
     // Call the function to fetch and display cards when the page loads
     displayCardsBySection();
