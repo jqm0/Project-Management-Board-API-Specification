@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 @RestController
-@RequestMapping("/api/boards")
+@RequestMapping("/api/boards/{boardId}")
+@CrossOrigin("*")
 public class CardController {
     private final CardService cardService;
     private final BoardService boardService;
@@ -26,7 +27,7 @@ public class CardController {
         this.boardService = boardService;
     }
     // Endpoint for adding a card to a board
-    @PostMapping("/{boardId}/cards")
+    @PostMapping("/cards")
     public ResponseEntity<CardResponse> addCardToBoard(@PathVariable Long boardId, @RequestBody CardRequest cardRequest) {
         // Check if the board exists
         Board board = boardService.getBoardById(boardId);
@@ -55,7 +56,7 @@ public class CardController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     // Endpoint for getting all cards from a board
-    @GetMapping("/{boardId}/cards")
+    @GetMapping("/cards")
     public ResponseEntity<Map<String, List<CardResponse>>> getCardsFromBoard(@PathVariable Long boardId) {
         // Check if the board with the given boardId exists
         Board board = boardService.getBoardById(boardId);
@@ -76,7 +77,7 @@ public class CardController {
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
     // Endpoint for getting a specific card from a board by its ID
-    @GetMapping("/{boardId}/cards/{cardId}")
+    @GetMapping("/cards/{cardId}")
     public ResponseEntity<CardResponse> getCardFromBoardById(
             @PathVariable Long boardId,
             @PathVariable Long cardId
@@ -105,7 +106,7 @@ public class CardController {
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
     // Endpoint for updating a card on a board by its ID
-    @PutMapping("/{boardId}/cards/{cardId}")
+    @PutMapping("/cards/{cardId}")
     public ResponseEntity<CardResponse> updateCardOnBoard(
             @PathVariable Long boardId,
             @PathVariable Long cardId,
@@ -137,7 +138,7 @@ public class CardController {
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
     // Endpoint for deleting a card from a board by its ID
-    @DeleteMapping("/{boardId}/cards/{cardId}")
+    @DeleteMapping("/cards/{cardId}")
     public ResponseEntity<Map<String, String>> deleteCardFromBoard(
             @PathVariable Long boardId,
             @PathVariable Long cardId

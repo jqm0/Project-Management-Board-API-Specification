@@ -1,6 +1,6 @@
 
 async function displayCardsBySection() {
-  const boardId = 2; // Assuming the card should be added to the board with ID 2
+  const boardId = 1; // Assuming the card should be added to the board with ID 2
   try {
     // Fetch the list of cards for the board using the provided fetch code
     const requestOptions = {
@@ -67,9 +67,51 @@ async function displayCardsBySection() {
     alert('An error occurred while fetching cards.');
   }
 }
+async function createNewBoard() {
+  try {
+    // Get the board title from the input field
+    const titleInput = document.getElementById('titleInput').value;
+
+    // Prepare the request body
+    const requestBody = {
+      title: titleInput,
+    };
+
+    // Configure the request options
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      redirect: 'follow',
+    };
+
+    // Send the POST request to create a new board
+    const response = await fetch('http://localhost:8080/api/boards', requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`Failed to create board. Status: ${response.status} ${response.statusText}`);
+    }
+
+    // Extract the newly created board data
+    const newBoard = await response.json();
+    console.log('New Board:', newBoard);
+
+    // Clear the input field after successful creation
+    document.getElementById('titleInput').value = '';
+
+    // Update the UI to display the newly created board title
+    document.getElementById('displayTitle').textContent = `Board Title: ${newBoard.title}`;
+
+  } catch (error) {
+    console.error('Error creating board:', error);
+    alert('An error occurred while creating the board.');
+  }
+}
 
 async function createNewCard() {
-  const boardId = 2; // Assuming the card should be added to the board with ID 2
+  const boardId = 1; // Assuming the card should be added to the board with ID 2
   const titleInput = document.getElementById('createCardTitleInput');
   const descInput = document.getElementById('createCardDescInput');
   const sectionSelect = document.getElementById('createCategorySelect');
@@ -120,7 +162,7 @@ async function handleDelete() {
   }
 }
 async function deleteCard(cardId) {
-  const boardId = 2; // Assuming the card should be deleted from the board with ID 2
+  const boardId = 1; // Assuming the card should be deleted from the board with ID 2
   try {
     const requestOptions = {
       method: 'DELETE',
@@ -161,7 +203,7 @@ async function updateCard() {
 
   // Make the PUT request to update the card
   try {
-    const boardId = 2; // Assuming the card belongs to the board with ID 10
+    const boardId = 1; // Assuming the card belongs to the board with ID 10
 
     const requestOptions = {
       method: 'PUT',

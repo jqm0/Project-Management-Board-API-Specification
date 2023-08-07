@@ -13,7 +13,7 @@
         </div>
         <div class="header-right">
             <input type="text" placeholder="Enter Title Here" id="titleInput">
-            <button onclick="setTitle()">SET</button>
+            <button onclick="createNewBoard()">SET</button>
         </div>
     </header>
 
@@ -128,6 +128,48 @@
         </div>
     </div>s
     <script>
+    async function createNewBoard() {
+  try {
+    // Get the board title from the input field
+    const titleInput = document.getElementById('titleInput').value;
+
+    // Prepare the request body
+    const requestBody = {
+      title: titleInput,
+    };
+
+    // Configure the request options
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      redirect: 'follow',
+    };
+
+    // Send the POST request to create a new board
+    const response = await fetch('http://localhost:8080/api/boards', requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`Failed to create board. Status: ${response.status} ${response.statusText}`);
+    }
+
+    // Extract the newly created board data
+    const newBoard = await response.json();
+    console.log('New Board:', newBoard);
+
+    // Clear the input field after successful creation
+    document.getElementById('titleInput').value = '';
+
+    // Update the UI to display the newly created board title
+    document.getElementById('displayTitle').textContent = `Board Title: ${newBoard.title}`;
+
+  } catch (error) {
+    console.error('Error creating board:', error);
+    alert('An error occurred while creating the board.');
+  }
+}
 
   </script>
     <script src="script.js"></script>
