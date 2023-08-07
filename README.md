@@ -9,16 +9,19 @@ User Collaboration: Users can invite team members to collaborate on projects and
 Real-time Updates: Changes made by one user are immediately visible to others, ensuring seamless collaboration.
 User Authentication: The application supports user authentication to ensure data security and access control.
 # Getting Started:
-To use the application, users need to create an account or log in with existing credentials. Once logged in, they can start creating tasks, adding them to projects, and updating their status as they progress. The application also provides a dashboard that displays an overview of all tasks and projects, making it easier to track progress.
-# Note:
-you have to create one borad first then you can add cards.
-# API Endpoints:
+To use the application, users need to create one borad first then you can add cards, this can be done by fill the input field with title of board and then click Set Button. Once you create the board, they can start creating cards, adding them to projects, and updating their status as they progress. The application also provides a dashboard that displays an overview of all tasks and projects, making it easier to track progress.
 
+# API Endpoints:
+* Board *
 GET /api/boards: Get a list of all boards.
 POST /api/boards: Create a new board.
 PUT /api/boards/{board_id}:id: Update a board with the specified ID.
 DELETE /api/boards/{board_id}: Delete a board with the specified ID.
-
+* Card *
+GET /api/boards/{board_id}/cards: Get a list of all cards in that board.
+POST /api/boards/{board_id}/cards: Create a new card in specified board.
+PUT /api/boards/{board_id}/cards/{card_id}:id: Update a specified card in in specified board.
+DELETE /api/boards/{board_id}/cards/{card_id}: Delete a specified card in in specified board.
 # Technologies Used:
 
 Frontend: HTML, CSS, JavaScript, React.js
