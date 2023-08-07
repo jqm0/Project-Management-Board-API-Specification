@@ -10,7 +10,8 @@ Real-time Updates: Changes made by one user are immediately visible to others, e
 User Authentication: The application supports user authentication to ensure data security and access control.
 # Getting Started:
 To use the application, users need to create an account or log in with existing credentials. Once logged in, they can start creating tasks, adding them to projects, and updating their status as they progress. The application also provides a dashboard that displays an overview of all tasks and projects, making it easier to track progress.
-#
+# Note:
+you have to create one borad first then you can add cards.
 # API Endpoints:
 
 GET /api/boards: Get a list of all boards.
